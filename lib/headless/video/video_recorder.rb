@@ -15,6 +15,7 @@ class Headless
       @log_file_path = options.fetch(:log_file_path, "/dev/null")
       @codec = options.fetch(:codec, "qtrle")
       @frame_rate = options.fetch(:frame_rate, 30)
+      @nomouse = options.fetch(:nomouse, false)
     end
 
     def capture_running?
@@ -29,9 +30,10 @@ class Headless
         'g 600',
         "s #{@dimensions}",
         'f x11grab',
+        ('draw_mouse 0' if @nomouse),
         "i :#{@display}",
         "vcodec #{@codec}"
-      ]*' -'
+      ].compact*' -'
       CliUtil.fork_process("#{cmd} #{@tmp_file_path}", @pid_file_path, @log_file_path)
       at_exit do
         exit_status = $!.status if $!.is_a?(SystemExit)
