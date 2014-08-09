@@ -16,6 +16,7 @@ class Headless
       @codec = options.fetch(:codec, "qtrle")
       @frame_rate = options.fetch(:frame_rate, 30)
       @nomouse = options.fetch(:nomouse, false)
+      @audio = options.fetch(:audio, false)
     end
 
     def capture_running?
@@ -32,7 +33,8 @@ class Headless
         'f x11grab',
         ('draw_mouse 0' if @nomouse),
         "i :#{@display}",
-        "vcodec #{@codec}"
+        "vcodec #{@codec}",
+        ("f alsa -ac 2 -i pulse" if @audio)
       ].compact*' -'
       CliUtil.fork_process("#{cmd} #{@tmp_file_path}", @pid_file_path, @log_file_path)
       at_exit do
