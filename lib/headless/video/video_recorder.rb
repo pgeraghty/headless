@@ -40,7 +40,7 @@ class Headless
           ('draw_mouse 0' if @nomouse),
           "i :#{@display}",
           "vcodec #{@codec}",
-          "g #{@frame_rate.to_i*20 if @bin_version < Gem::Version.new('1')}",
+          ("g #{@frame_rate.to_i*20}" if @bin_version < Gem::Version.new('1')),
           ('f alsa -ac 2 -i pulse' if @audio)
       ].compact*' -'
     end
