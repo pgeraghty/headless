@@ -2,7 +2,7 @@ require 'tempfile'
 
 class Headless
   class VideoRecorder
-    attr_accessor :pid_file_path, :tmp_file_path, :log_file_path, :capture_with
+    attr_accessor :pid_file_path, :tmp_file_path, :log_file_path, :bin_file_path, :bin_version, :capture_with
 
     def initialize(display, dimensions, options = {})
       CliUtil.ensure_application_exists!('ffmpeg', 'Ffmpeg not found on your system. Install it with sudo apt-get install ffmpeg')
@@ -15,7 +15,7 @@ class Headless
       # ffmpeg version 2.3.1
       # ffmpeg version 0.10.9-7:0.10.9-1~quantal1
       # ffmpeg 0.8.10-6:0.8.10-0ubuntu0.12.10.1
-      @bin_version   = options.fetch(:bin_version, Gem::Version.new(`#{@bin_file_path}`[/(?:ffmpeg )(?:version )?((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/, 1]))
+      @bin_version   = options.fetch(:bin_version, Gem::Version.new(`#{@bin_file_path} -version`[/(?:ffmpeg )(?:version )?((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/, 1]))
       @pid_file_path = options.fetch(:pid_file_path, "/tmp/.headless_ffmpeg_#{@display}.pid")
       @tmp_file_path = options.fetch(:tmp_file_path, "/tmp/.headless_ffmpeg_#{@display}.mov")
       @log_file_path = options.fetch(:log_file_path, '/dev/null')
