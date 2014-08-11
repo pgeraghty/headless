@@ -2,7 +2,7 @@ require 'tempfile'
 
 class Headless
   class VideoRecorder
-    attr_accessor :pid_file_path, :tmp_file_path, :log_file_path
+    attr_accessor :pid_file_path, :tmp_file_path, :log_file_path, :capture_with
 
     def initialize(display, dimensions, options = {})
       CliUtil.ensure_application_exists!('ffmpeg', 'Ffmpeg not found on your system. Install it with sudo apt-get install ffmpeg')
@@ -10,9 +10,15 @@ class Headless
       @display = display
       @dimensions = dimensions[/.+(?=x)/]
 
+      @bin_file_path = options.fetch(:bin_file_path, CliUtil.path_to('ffmpeg'))
+      # divine version - tested on:
+      # ffmpeg version 2.3.1
+      # ffmpeg version 0.10.9-7:0.10.9-1~quantal1
+      # ffmpeg 0.8.10-6:0.8.10-0ubuntu0.12.10.1
+      @bin_version   = options.fetch(:bin_version, Gem::Version.new(`#{@bin_file_path}`[/(?:ffmpeg )(?:version )?((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/, 1]))
       @pid_file_path = options.fetch(:pid_file_path, "/tmp/.headless_ffmpeg_#{@display}.pid")
       @tmp_file_path = options.fetch(:tmp_file_path, "/tmp/.headless_ffmpeg_#{@display}.mov")
-      @log_file_path = options.fetch(:log_file_path, "/dev/null")
+      @log_file_path = options.fetch(:log_file_path, '/dev/null')
       @codec = options.fetch(:codec, "qtrle")
       @frame_rate = options.fetch(:frame_rate, 30)
       @nomouse = options.fetch(:nomouse, false)
@@ -23,20 +29,24 @@ class Headless
       CliUtil.read_pid @pid_file_path
     end
 
-    def start_capture
-      cmd = [
-        CliUtil.path_to('ffmpeg'),  # TODO divine version or add option
-        'y',                        # ignore already-existing file
-        "r #{@frame_rate}",
-        'g 600',
-        "s #{@dimensions}",
-        'f x11grab',
-        ('draw_mouse 0' if @nomouse),
-        "i :#{@display}",
-        "vcodec #{@codec}",
-        ("f alsa -ac 2 -i pulse" if @audio)
+    def capture_with
+      # TODO adjust switches based on @bin_version e.g. if @bin_version < Gem::Version.new('1')
+      [
+          @bin_file_path,
+          'y',                        # ignore already-existing file
+          "r #{@frame_rate}",
+          'g 600',
+          "s #{@dimensions}",
+          'f x11grab',
+          ('draw_mouse 0' if @nomouse),
+          "i :#{@display}",
+          "vcodec #{@codec}",
+          ('f alsa -ac 2 -i pulse' if @audio)
       ].compact*' -'
-      CliUtil.fork_process("#{cmd} #{@tmp_file_path}", @pid_file_path, @log_file_path)
+    end
+
+    def start_capture
+      CliUtil.fork_process("#{capture_with} #{@tmp_file_path}", @pid_file_path, @log_file_path)
       at_exit do
         exit_status = $!.status if $!.is_a?(SystemExit)
         stop_and_discard
