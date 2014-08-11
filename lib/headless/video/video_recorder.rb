@@ -19,7 +19,7 @@ class Headless
       @pid_file_path = options.fetch(:pid_file_path, "/tmp/.headless_ffmpeg_#{@display}.pid")
       @tmp_file_path = options.fetch(:tmp_file_path, "/tmp/.headless_ffmpeg_#{@display}.mov")
       @log_file_path = options.fetch(:log_file_path, '/dev/null')
-      @codec = options.fetch(:codec, "qtrle")
+      @codec = options.fetch(:codec, 'qtrle')
       @frame_rate = options.fetch(:frame_rate, 30).to_i
       @nomouse = options.fetch(:nomouse, false)
       @audio = options.fetch(:audio, false)
