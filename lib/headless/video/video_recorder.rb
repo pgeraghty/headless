@@ -20,7 +20,7 @@ class Headless
       @tmp_file_path = options.fetch(:tmp_file_path, "/tmp/.headless_ffmpeg_#{@display}.mov")
       @log_file_path = options.fetch(:log_file_path, '/dev/null')
       @codec = options.fetch(:codec, "qtrle")
-      @frame_rate = options.fetch(:frame_rate, 30)
+      @frame_rate = options.fetch(:frame_rate, 30).to_i
       @nomouse = options.fetch(:nomouse, false)
       @audio = options.fetch(:audio, false)
     end
@@ -35,12 +35,12 @@ class Headless
           @bin_file_path,
           'y',                        # ignore already-existing file
           "r #{@frame_rate}",
-          'g 600',
           "s #{@dimensions}",
           'f x11grab',
           ('draw_mouse 0' if @nomouse),
           "i :#{@display}",
           "vcodec #{@codec}",
+          "g #{@frame_rate.to_i*20 if @bin_version < Gem::Version.new('1')}",
           ('f alsa -ac 2 -i pulse' if @audio)
       ].compact*' -'
     end
