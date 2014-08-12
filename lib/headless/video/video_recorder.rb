@@ -34,14 +34,14 @@ class Headless
       [
           @bin_file_path,
           'y',                        # ignore already-existing file
+          ('f alsa -ac 2 -i hw:0,1' if @audio),
           "r #{@frame_rate}",
           "s #{@dimensions}",
           'f x11grab',
           ('draw_mouse 0' if @nomouse),
           "i :#{@display}",
           "vcodec #{@codec}",
-          ("g #{@frame_rate.to_i*20}" if @bin_version < Gem::Version.new('1')),
-          ('f alsa -ac 2 -i pulse' if @audio)
+          ("g #{@frame_rate.to_i*20}" if @bin_version < Gem::Version.new('1'))
       ].compact*' -'
     end
 
