@@ -6,6 +6,14 @@ describe Headless do
     stub_environment
   end
 
+  after do
+    `killall Xvfb`
+    # RSpec::Mocks.proxy_for(Headless::CliUtil).reset
+    # RSpec::Mocks.proxy_for(Headless).reset
+    #
+    # ObjectSpace.each_object(Headless) { |h| RSpec::Mocks.proxy_for(h).reset; h.destroy }
+  end
+
   context "instantiation" do
     context "when Xvfb is not installed" do
       before do
@@ -150,7 +158,7 @@ describe Headless do
     it "raises an error if imagemagick is not installed" do
       Headless::CliUtil.stub(:application_exists?).and_return(false)
 
-      lambda { headless.take_screenshot }.should raise_error(Headless::Exception)
+      expect { headless.take_screenshot }.to raise_error
     end
 
     it "issues command to take screenshot" do
@@ -163,11 +171,12 @@ describe Headless do
   end
 
 private
-
   def stub_environment
     Headless::CliUtil.stub(:application_exists?).and_return(true)
     Headless::CliUtil.stub(:read_pid).and_return(nil)
-    Headless::CliUtil.stub(:path_to).and_return("/usr/bin/Xvfb")
+    Headless::CliUtil.stub(:path_to)
+    Headless::CliUtil.stub(:path_to).with('Xvfb').and_return('/usr/bin/Xvfb')
+    Headless::CliUtil.stub(:path_to).with('ffmpeg').and_return('/usr/bin/ffmpeg')
 
     # TODO this is wrong. But, as long as Xvfb is started inside the constructor (which is also wrong), I don't see another option to make tests pass
     Headless.any_instance.stub(:ensure_xvfb_is_running).and_return(true)
