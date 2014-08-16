@@ -18,17 +18,16 @@ describe Headless::VideoRecorder do
   describe "#capture" do
     it "starts ffmpeg" do
       Headless::CliUtil.stub(:path_to).and_return('ffmpeg')
-      Headless::CliUtil.should_receive(:fork_process).with(/ffmpeg -y -r 30 -s 1024x768 -f x11grab -i :99 -vcodec qtrle -g 600/, '/tmp/.headless_ffmpeg_99.pid', '/dev/null')
-
       recorder = Headless::VideoRecorder.new(99, "1024x768x32")
+
+      Headless::CliUtil.should_receive(:fork_process).with(/#{recorder.capture_with}/, '/tmp/.headless_ffmpeg_99.pid', '/dev/null')
       recorder.start_capture
     end
 
     it "starts ffmpeg with specified codec" do
       Headless::CliUtil.stub(:path_to).and_return('ffmpeg')
-      Headless::CliUtil.should_receive(:fork_process).with(/ffmpeg -y -r 30 -s 1024x768 -f x11grab -i :99 -vcodec libvpx -g 600/, "/tmp/.headless_ffmpeg_99.pid", '/dev/null')
-
       recorder = Headless::VideoRecorder.new(99, "1024x768x32", {:codec => 'libvpx'})
+      Headless::CliUtil.should_receive(:fork_process).with(/#{recorder.capture_with}/, '/tmp/.headless_ffmpeg_99.pid', '/dev/null')
       recorder.start_capture
     end
   end
