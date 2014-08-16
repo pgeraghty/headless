@@ -7,6 +7,6 @@ rvm:
 env:
   - FFMPEG_VERSION=default
   - FFMPEG_VERSION=2.3
-install: ./.travis/setup.sh
+before_install: ./.travis/setup.sh
 script: "rspec"
 
