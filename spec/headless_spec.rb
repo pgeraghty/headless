@@ -170,7 +170,7 @@ describe Headless do
     end
   end
 
-  context 'utility' do
+  context '#ensure_xvfb_is_running' do
     let(:headless) { Headless.new }
     before { headless.stub(:ensure_xvfb_is_running).and_call_original }
 
@@ -194,6 +194,14 @@ describe Headless do
         times.pop
       end
       expect { headless.ensure_xvfb_is_running }.to raise_error(Headless::Exception)
+    end
+  end
+
+  context 'run' do
+    it 'instantiates, starts, yields and is destroyed' do
+      Headless.any_instance.should_receive(:start)
+      Headless.any_instance.should_receive(:destroy)
+      expect { |b| Headless.run({}, &b) }.to yield_with_args(Headless)
     end
   end
 
