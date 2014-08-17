@@ -57,9 +57,40 @@ describe Headless::CliUtil do
       subject.class.read_pid('/tmp/.headless_ffmpeg_99.pid').should eq(999999999999)
     end
 
-    it 'returns nil after a rescued error when process does not exist' do
+    it 'returns false after a rescued error when process does not exist' do
       Process.stub(:kill).and_raise(Errno::ESRCH)
-      subject.class.read_pid('/tmp/.headless_ffmpeg_99.pid').should eq(nil)
+      subject.class.read_pid('/tmp/.headless_ffmpeg_99.pid').should eq(false)
     end
+  end
+
+  describe 'signal_process' do
+    let(:pidfile) { '/tmp/pid' }
+    let(:fakepid) { 999999999999 }
+
+    before do
+      Process.stub(:kill)
+      File.stub(:read).and_return(fakepid.to_s)
+    end
+
+    it 'reads PID file' do
+      #File.should_receive(:read).with(pidfile).and_return('')
+      File.stub(:read).and_return('')
+      subject.class.should_receive(:read_pid).with(pidfile).and_return(nil)
+      subject.class.signal_process(pidfile, 'CONT').should eq(nil)
+    end
+
+    it 'sends signal to process' do
+      Process.should_receive(:kill).with('CONT', fakepid)
+      subject.class.should_receive(:read_pid).with(pidfile).and_return(fakepid)
+      subject.class.signal_process(pidfile, 'CONT').should eq(true)
+    end
+
+    it 'returns false after a rescued error when process does not exist' do
+      Process.stub(:kill).and_raise(Errno::ESRCH)
+      subject.class.should_receive(:read_pid).with(pidfile).and_return(fakepid)
+      subject.class.signal_process(pidfile, 'STOP').should eq(false)
+    end
+
+
   end
 end

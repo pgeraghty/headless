@@ -23,10 +23,8 @@ class Headless
           Process.kill(0, pid)
           pid
         rescue Errno::ESRCH
-          nil
+          false
         end
-      else
-        nil
       end
     end
 
@@ -59,6 +57,18 @@ class Headless
         FileUtils.rm pid_filename
       rescue Errno::ENOENT
         # pid file already removed
+      end
+    end
+
+    def self.signal_process(pid_filename, signal, options={})
+      if pid = self.read_pid(pid_filename)
+        begin
+          Process.kill signal, pid
+          true
+        rescue Errno::ESRCH
+          # no such process; assume it's already killed
+          false
+        end
       end
     end
   end

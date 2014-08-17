@@ -32,7 +32,7 @@ describe Headless::VideoRecorder do
     end
   end
 
-  context "stopping video recording" do
+  context 'stopping, pausing and resuming video recording' do
     let(:tmpfile) { '/tmp/ci.mov' }
     let(:filename) { '/tmp/test.mov' }
     let(:pidfile) { '/tmp/pid' }
@@ -72,6 +72,22 @@ describe Headless::VideoRecorder do
         FileUtils.should_receive(:rm).with(tmpfile)
 
         subject.stop_and_discard
+      end
+    end
+
+    describe 'using #pause' do
+      it 'pauses video recording' do
+        Headless::CliUtil.should_receive(:signal_process).with(pidfile, 'STOP')
+
+        expect(subject.pause).to eq(nil)
+      end
+    end
+
+    describe 'using #resume' do
+      it 'resumes video recording' do
+        Headless::CliUtil.should_receive(:signal_process).with(pidfile, 'CONT')
+
+        expect(subject.resume).to eq(nil)
       end
     end
 

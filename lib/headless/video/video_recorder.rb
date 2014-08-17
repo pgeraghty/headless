@@ -58,6 +58,14 @@ class Headless
       end
     end
 
+    def pause
+      CliUtil.signal_process(@pid_file_path, 'STOP')
+    end
+
+    def resume
+      CliUtil.signal_process(@pid_file_path, 'CONT')
+    end
+
     def stop_and_save(path)
       CliUtil.kill_process(@pid_file_path, :wait => true, :sig => 'INT')
       if File.exists? @tmp_file_path
