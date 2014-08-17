@@ -43,9 +43,10 @@ class Headless
     end
 
     def self.kill_process(pid_filename, options={})
+      options[:sig] ||= 'TERM'
       if pid = self.read_pid(pid_filename)
         begin
-          Process.kill 'INT', pid
+          Process.kill options[:sig], pid
           Process.wait pid if options[:wait]
         rescue Errno::ESRCH
           # no such process; assume it's already killed
