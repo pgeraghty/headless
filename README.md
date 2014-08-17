@@ -2,6 +2,7 @@
 [![Gem Version](https://badge.fury.io/rb/headless-muse.svg)](http://badge.fury.io/rb/headless-muse)
 [![Build Status](https://travis-ci.org/pgeraghty/headless.svg?branch=master)](https://travis-ci.org/pgeraghty/headless)
 [![Coverage Status](https://img.shields.io/coveralls/pgeraghty/headless.svg)](https://coveralls.io/r/pgeraghty/headless?branch=master)
+[![Code Climate](https://codeclimate.com/github/pgeraghty/headless/badges/gpa.svg)](https://codeclimate.com/github/pgeraghty/headless)
 
 # This fork
 
