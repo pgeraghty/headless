@@ -15,4 +15,4 @@ describe Headless::VideoRecorder do
     `rm #{capture_file}`
     expect { h.destroy }.not_to raise_error
   end
-end if Headless::CliUtil.application_exists?('ffmpeg')
+end if Headless::CliUtil.application_exists?('Xvfb') && Headless::CliUtil.application_exists?('ffmpeg')

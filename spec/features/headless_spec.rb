@@ -10,4 +10,4 @@ describe Headless do
   it 'should destroy Xvfb when requested' do
     expect { h.destroy }.not_to raise_error
   end
-end
+end if Headless::CliUtil.application_exists?('Xvfb')
