@@ -63,8 +63,9 @@ class Headless
       if File.exists? @tmp_file_path
         begin
           FileUtils.mv(@tmp_file_path, path)
+            true
         rescue Errno::EINVAL
-          nil
+          false
         end
       end
     end

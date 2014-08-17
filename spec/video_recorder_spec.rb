@@ -49,11 +49,19 @@ describe Headless::VideoRecorder do
         File.should_receive(:exists?).with(tmpfile).and_return(true)
         FileUtils.should_receive(:mv).with(tmpfile, filename)
 
-        subject.stop_and_save(filename)
+        expect(subject.stop_and_save(filename)).to eq(true)
       end
 
-      it 'returns nil after a rescued error when attempting to move file' do
-        FileUtils.stub(:mv).and_raise(Errno::ESRCH)
+      it 'returns false after a rescued error when attempting to move file' do
+        FileUtils.stub(:mv).and_raise(Errno::EINVAL)
+        File.should_receive(:exists?).and_return(true)
+
+        expect(subject.stop_and_save(tmpfile)).to eq(false)
+      end
+
+      it 'returns nil when target file does not exist' do
+        File.stub(:exists?).and_return(false)
+
         expect(subject.stop_and_save(tmpfile)).to eq(nil)
       end
     end
