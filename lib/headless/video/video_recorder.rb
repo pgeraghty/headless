@@ -30,7 +30,7 @@ class Headless
     end
 
     def capture_running?
-      CliUtil.read_pid @pid_file_path
+      !!CliUtil.read_pid(@pid_file_path)
     end
 
     def capture_with
