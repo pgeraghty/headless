@@ -1,4 +1,13 @@
-# Headless [![Travis CI status](https://secure.travis-ci.org/leonid-shevtsov/headless.png)](http://travis-ci.org/leonid-shevtsov/headless)
+# Headless
+[![Gem Version](https://badge.fury.io/rb/headless-muse.svg)](http://badge.fury.io/rb/headless-muse)
+[![Build Status](https://travis-ci.org/pgeraghty/headless.svg?branch=master)](https://travis-ci.org/pgeraghty/headless)
+[![Coverage Status](https://img.shields.io/coveralls/pgeraghty/headless.svg)](https://coveralls.io/r/pgeraghty/headless?branch=master)
+
+# This fork
+
+This fork is the source of the [headless-muse gem](https://rubygems.org/gems/headless-muse).
+
+## Notes by original author (Leonid Shevtsov)
 
 Headless is *the* Ruby interface for Xvfb. It allows you to create a headless display straight from Ruby code, hiding some low-level action.
 It can also capture images and video from the virtual framebuffer.
@@ -131,8 +140,3 @@ Images are captured using `import` utility which is part of `imagemagick` librar
 ---
 
 &copy; 2011 Leonid Shevtsov, released under the MIT license
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/leonid-shevtsov/headless/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
