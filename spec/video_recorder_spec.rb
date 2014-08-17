@@ -51,6 +51,11 @@ describe Headless::VideoRecorder do
 
         subject.stop_and_save(filename)
       end
+
+      it 'returns nil after a rescued error when attempting to move file' do
+        FileUtils.stub(:mv).and_raise(Errno::ESRCH)
+        expect(subject.stop_and_save(tmpfile)).to eq(nil)
+      end
     end
 
     describe "using #stop_and_discard" do
@@ -59,6 +64,14 @@ describe Headless::VideoRecorder do
         FileUtils.should_receive(:rm).with(tmpfile)
 
         subject.stop_and_discard
+      end
+    end
+
+    describe '#capture_running?' do
+      it 'returns false unless the PID file exists' do
+        Headless::CliUtil.should_receive(:read_pid).with(pidfile)
+
+        expect(subject.capture_running?).to eq(false)
       end
     end
   end
