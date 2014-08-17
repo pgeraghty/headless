@@ -15,6 +15,6 @@ describe Headless::VideoRecorder do
     `rm #{capture_file}`
     Process.detach fluxbox
     expect { h.destroy }.not_to raise_error
-    Process.kill(9, fluxbox)
+    Process.kill(9, fluxbox) rescue nil
   end
 end if Headless::CliUtil.application_exists?('ffmpeg')
