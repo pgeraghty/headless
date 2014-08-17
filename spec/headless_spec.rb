@@ -1,4 +1,4 @@
-require 'headless'
+require 'spec_helper'
 
 describe Headless do
   before do
