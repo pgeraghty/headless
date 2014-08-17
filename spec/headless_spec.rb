@@ -170,6 +170,33 @@ describe Headless do
     end
   end
 
+  context 'utility' do
+    let(:headless) { Headless.new }
+    before { headless.stub(:ensure_xvfb_is_running).and_call_original }
+
+
+    it 'store the start times and compares' do
+      headless.stub(:xvfb_running?).and_return(true)
+      Time.should_receive(:now).twice.and_call_original
+      headless.ensure_xvfb_is_running
+    end
+
+    it 'pauses briefly' do
+      headless.stub(:xvfb_running?).and_return(true)
+      headless.should_receive(:sleep).with(0.01)
+      headless.ensure_xvfb_is_running
+    end
+
+    it 'times out' do
+      headless.stub(:xvfb_running?).and_return(false)
+      times = [Time.now + 20, Time.now]
+      Time.stub(:now) do
+        times.pop
+      end
+      expect { headless.ensure_xvfb_is_running }.to raise_error(Headless::Exception)
+    end
+  end
+
 private
   def stub_environment
     Headless::CliUtil.stub(:application_exists?).and_return(true)
