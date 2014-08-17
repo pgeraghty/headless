@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   EOF
   s.requirements = 'Xvfb'
   s.homepage = 'https://github.com/pgeraghty/headless'
-
+  s.license = 'MIT'
   s.files         = `git ls-files`.split("\n")
 
   s.add_development_dependency 'rake'
