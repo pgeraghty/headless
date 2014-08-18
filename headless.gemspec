@@ -3,12 +3,12 @@ Gem::Specification.new do |s|
   s.email = 'muse@appsthatcould.be'
 
   s.name = 'headless-muse'
-  s.version = '1.1.0'
+  s.version = '1.1.1'
   s.summary = 'Ruby headless display interface'
 
   s.description = <<-EOF
     Headless is a Ruby interface for Xvfb. It allows you to create a headless display straight from Ruby code, hiding some low-level action.
-    It can also capture video and audio via ffmpeg and take screenshots.
+    It can also capture video and audio via ffmpeg (including the latest versions) and take screenshots using ImageMagick.
   EOF
   s.requirements = 'Xvfb'
   s.homepage = 'https://github.com/pgeraghty/headless'
